@@ -6,7 +6,7 @@ namespace Marussia\Content\Actions;
 
 abstract class AbstractAction
 {
-    protected $language = '';
+    protected $language = 'en-en';
 
     public function language(string $language) : self
     {

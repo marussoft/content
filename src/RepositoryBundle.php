@@ -6,6 +6,7 @@ namespace Marussia\Content;
 
 use Marussia\Content\Repositories\ContentRepository;
 use Marussia\Content\Repositories\ContentTypeRepository;
+use Marussia\Content\Entities\ContentType;
 
 class RepositoryBundle
 {
@@ -20,13 +21,18 @@ class RepositoryBundle
         $this->contentTypeRepository = $contentTypeRepository;
     }
 
+    public function getContentType(string $contentTypeName) : ?ContentType
+    {
+        return $this->contentTypeRepository->get($contentTypeName);
+    }
+
     public function getFields(string $contentTypeName)
     {
         $fieldsTable = $this->makeFieldsTableName($contentTypeName);
         return $this->contentRepository->getFields($fieldsTable);
     }
 
-    public function getFieldsValues(string $contentTypeName, int $contentId)
+    public function getFieldsValues(string $contentTypeName, int $contentId, string $language)
     {
         $valuesTable = $this->makeValuesTableName($contentTypeName);
         return $this->contentRepository->getFields($valuesTable);
