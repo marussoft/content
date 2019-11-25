@@ -14,20 +14,29 @@ class GetContentByIdProvider
     protected $fillFieldAction;
 
     protected $fieldDataFactory;
+    
+    protected $fieldFactory;
 
-    public function __construct(FillAction $fillFieldAction, FieldDataFactory $fieldDataFactory)
+    public function __construct(FillAction $fillFieldAction, FieldDataFactory $fieldDataFactory, FieldFactory $fieldFactory)
     {
         $this->fillFieldAction = $fillFieldAction;
-        $this->fieldDataFactory = $fieldDataFactory
+        $this->fieldDataFactory = $fieldDataFactory;
+        $this->fieldFactory = $fieldFactory;
     }
 
     public function createFieldData(array $data) : FieldData
     {
-        return $this->fillFieldAction->execute($data);
+        return $this->fieldDataFactory->create($data);
     }
 
     public function fillField(FieldData $fieldData) : Field
     {
         return $this->fillFieldAction->execute($fieldData);
     }
+    
+    public function createFieldWithoutHandler($value) : Field
+    {
+        return $this->fieldFactory(['value' => $value]);
+    }
+
 }

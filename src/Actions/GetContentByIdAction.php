@@ -7,6 +7,7 @@ namespace Marussia\Content\Actions;
 use Marussia\Content\RepositoryBundle;
 use Marussia\Content\Actions\Providers\GetContentByIdProvider;
 use Marussia\Content\ViewModels\Content;
+use Marussia\Content\ContentBuilder;
 
 class GetContentByIdAction
 {
@@ -14,13 +15,13 @@ class GetContentByIdAction
 
     protected $getContentByIdProvider;
 
-    protected $content;
+    protected $contentBuilder;
 
-    public function __construct(RepositoryBundle $repositoryBundle, GetContentByIdProvider $getContentByIdProvider, Content $content)
+    public function __construct(RepositoryBundle $repositoryBundle, GetContentByIdProvider $getContentByIdProvider, ContentBuilder $contentBuilder)
     {
         $this->repositoryBundle = $repositoryBundle;
         $this->getContentByIdProvider = $getContentByIdProvider;
-        $this->content = $content;
+        $this->contentBuilder = $contentBuilder;
     }
 
     public function execute(string $contentTypeName, int $contentId) : Content
@@ -34,17 +35,18 @@ class GetContentByIdAction
         $fields = $this->repositoryBundle->getFields($contentTypeName);
         $fieldsValues = $this->repositoryBundle->getFieldsValues($contentTypeName, $contentId);
 
-        $content = [];
+        $contentData = [];
 
         foreach ($fieldsValues as $fieldType => $value) {
-            if (array_key_exists($fieldType, $fields)) {
-                $fieldData = $this->getContentByIdProvider->createFieldData($fields[$fieldType]);
-                $content[$fieldType] = $this->getContentByIdProvider->fillField($fieldData);
+            if ($fields->has($fieldType)) {
+                $fieldData = $this->getContentByIdProvider->createFieldData($fields->get($fieldType));
+                $fieldData->value = $value;
+                $contentData[$fieldType] = $this->getContentByIdProvider->fillField($fieldData);
+                continue;
             }
+            $contentData[$fieldType] = $this->getContentByIdProvider->createFieldWithoutHandler($value);
         }
 
-        $this->content->setData($content);
-
-        return $this->content;
+        return $this->contentBuilder->createContent($contentData);
     }
 }

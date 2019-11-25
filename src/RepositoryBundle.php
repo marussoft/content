@@ -13,9 +13,11 @@ class RepositoryBundle
 
     private $contentTypeRepository;
 
-    public function __construct()
+    public function __construct(ContentRepository $contentRepository, ContentTypeRepository, $contentTypeRepository)
     {
+        $this->contentRepository = $contentRepository;
 
+        $this->contentTypeRepository = $contentTypeRepository;
     }
 
     public function getFields(string $contentTypeName)
