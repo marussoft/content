@@ -6,7 +6,7 @@ namespace Marussia\Content\Actions;
 
 use Marussia\Fields\Actions\FillAction;
 use Marussia\Fields\FieldDataFactory;
-use Marussia\Fields\Entities\Field;
+use Marussia\Fields\Field;
 use Marussia\Fields\FieldData;
 
 class GetContentByIdProvider
