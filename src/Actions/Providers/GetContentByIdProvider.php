@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Marussia\Content\Actions;
 
-use Marussia\Fields\Actions\FillAction;
-use Marussia\Fields\FieldDataFactory;
-use Marussia\Fields\Field;
-use Marussia\Fields\FieldData;
+use Marussia\ContentField\Actions\FillAction;
+use Marussia\ContentField\FieldDataFactory;
+use Marussia\ContentField\Field;
+use Marussia\ContentField\FieldData;
 
 class GetContentByIdProvider
 {
     protected $fillFieldAction;
 
     protected $fieldDataFactory;
-    
+
     protected $fieldFactory;
 
     public function __construct(FillAction $fillFieldAction, FieldDataFactory $fieldDataFactory, FieldFactory $fieldFactory)
@@ -33,7 +33,7 @@ class GetContentByIdProvider
     {
         return $this->fillFieldAction->execute($fieldData);
     }
-    
+
     public function createFieldWithoutHandler($value) : Field
     {
         return $this->fieldFactory(['value' => $value]);
