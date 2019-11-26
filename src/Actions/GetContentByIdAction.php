@@ -33,7 +33,7 @@ class GetContentByIdAction extends AbstractAction
         }
 
         $fields = $this->repository->getFields($contentTypeName);
-        $fieldsValues = $this->repository->getFieldsValues($contentTypeName, $contentId, $this->language);
+        $fieldsValues = $this->repository->getFieldsValuesById($contentTypeName, $contentId, $this->language);
 
         $contentData = [];
 

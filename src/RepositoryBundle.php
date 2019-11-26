@@ -26,25 +26,13 @@ class RepositoryBundle
         return $this->contentTypeRepository->get($contentTypeName);
     }
 
-    public function getFields(string $contentTypeName)
+    public function getFields(string $contentTypeName) : Collection
     {
-        $fieldsTable = $this->makeFieldsTableName($contentTypeName);
-        return $this->contentRepository->getFields($fieldsTable);
+        return $this->contentRepository->getFields($contentTypeName);
     }
 
-    public function getFieldsValues(string $contentTypeName, int $contentId, string $language)
+    public function getFieldsValuesById(string $contentTypeName, int $contentId, string $language)
     {
-        $valuesTable = $this->makeValuesTableName($contentTypeName);
-        return $this->contentRepository->getFields($valuesTable);
-    }
-
-    protected function makeFieldsTableName(string $contentTypeName) : string
-    {
-        return $contentType . '_fields';
-    }
-
-    protected function makeValuesTableName(string $contentType) : string
-    {
-        return $contentType . '_field_values';
+        return $this->contentRepository->getFieldsValuesById($contentTypeName, $contentId, $language);
     }
 }
