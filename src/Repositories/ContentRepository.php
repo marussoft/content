@@ -28,7 +28,7 @@ class ContentRepository
         
         if ($fields !== null) {
             foreach ($fields as $field) {
-                $fieldCollection->set(key($field), current($field))
+                $fieldCollection->set($field['type'], $field)
             }
         }
         
