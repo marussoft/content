@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Marussia\Content\Actions;
+namespace Marussia\Content\Actions\Providers;
 
 use Marussia\ContentField\Actions\FillAction;
 use Marussia\ContentField\FieldDataFactory;

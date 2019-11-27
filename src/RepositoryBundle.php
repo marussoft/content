@@ -14,7 +14,7 @@ class RepositoryBundle
 
     private $contentTypeRepository;
 
-    public function __construct(ContentRepository $contentRepository, ContentTypeRepository, $contentTypeRepository)
+    public function __construct(ContentRepository $contentRepository, ContentTypeRepository $contentTypeRepository)
     {
         $this->contentRepository = $contentRepository;
 
