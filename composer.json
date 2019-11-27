@@ -16,7 +16,8 @@
         "docs": "https://docs.marussia.org/content/"
     },
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "marussia/content-field": "^1.0",
     },
     "minimum-stability": "dev",
     "autoload": {
@@ -30,7 +31,6 @@
         }
     },
     "require-dev": {
-        "marussia/content-field": "^1.0",
         "phpunit/phpunit": "^8.4",
         "mockery/mockery": "^1.2"
     }
