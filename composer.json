@@ -1,0 +1,38 @@
+{
+    "name": "marussia/content",
+    "description": "Marussia content",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "content"
+    ],
+    "authors": [
+        {
+            "name": "Mikhail Ilinsky",
+            "email": "mail@milinsky.ru"
+        }
+    ],
+    "support": {
+        "docs": "https://docs.marussia.org/content/"
+    },
+    "require": {
+        "php": "^7.2",
+        "marussia/content-field": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Marussia\\Content\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Marussia\\Content\\Test\\": ["tests/"]
+        }
+    },
+    "require-dev": {
+        "marussia/content-field": "^1.0",
+        "phpunit/phpunit": "^8.4",
+        "mockery/mockery": "^1.2"
+    }
+}
