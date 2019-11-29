@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Marussia\Content;
+namespace Marussia\Content\Bundles;
 
 use Marussia\Content\Repositories\ContentRepository;
 use Marussia\Content\Repositories\ContentTypeRepository;
 use Marussia\Content\Entities\ContentType;
+use Marussia\Content\Collection;
 
-class RepositoryBundle
+class ContentById
 {
     private $contentRepository;
 
@@ -35,7 +36,7 @@ class RepositoryBundle
     {
         return $this->contentRepository->getFieldsValuesById($contentTypeName, $contentId, $language);
     }
-    
+
     public function getFieldsValuesList(ContentType $contentType, array $filter, array $sort, array $language) : Collection
     {
         return $this->contentRepository->getFieldsValuesList($contentType, $filter, $sort, $language);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Marussia\Content\Test;
 
 use Marussia\Content\Actions\GetContentByIdAction;
-use Marussia\Content\RepositoryBundle;
+use Marussia\Content\Bundles\ContentById as RepositoryBundle;
 use Marussia\Content\Actions\Providers\FillFieldProvider;
 use Marussia\Content\ViewModels\Content;
 use Marussia\Content\ContentBuilder;
@@ -23,20 +23,20 @@ class GetContentByIdActionTest extends TestCase
         $repositoryBundle = $this->repositoryBundle();
         $actionProvider = $this->actionProvider();
         $contentBuilder = $this->contentBuilder();
-        
+
         $action = new GetContentByIdAction($repositoryBundle, $actionProvider, $contentBuilder);
-        
+
         $contentTypeName = 'test';
         $contentId = 1;
-        
+
         $this->assertInstanceOf(Content::class, $action->execute($contentTypeName, $contentId));
     }
-    
+
     private function actionProvider() : FillFieldProvider
     {
         $fieldData = Mockery::mock(FieldData::class);
         $field = Mockery::mock(Field::class);
-        
+
         $actionProvider = Mockery::mock(FillFieldProvider::class);
         $actionProvider->shouldReceive([
             'createFieldData' => $fieldData,
@@ -49,18 +49,18 @@ class GetContentByIdActionTest extends TestCase
     private function repositoryBundle() : RepositoryBundle
     {
         $contentType = Mockery::mock(ContentType::class);
-        
+
         $fieldCollection = Mockery::mock(Collection::class);
         $fieldCollection->shouldReceive([
             'has' => true,
             'get' => []
         ]);
-        
+
         $iterator = new \ArrayIterator(['test' => '']);
-        
+
         $fieldValueCollection = Mockery::mock(Collection::class);
         $fieldValueCollection->shouldReceive(['getIterator' => $iterator]);
-        
+
         $repositoryBundle = Mockery::mock(RepositoryBundle::class);
         $repositoryBundle->shouldReceive([
             'getContentType' => $contentType,
@@ -69,7 +69,7 @@ class GetContentByIdActionTest extends TestCase
         ]);
         return $repositoryBundle;
     }
-    
+
     private function contentBuilder() : ContentBuilder
     {
         $content = Mockery::mock(Content::class);

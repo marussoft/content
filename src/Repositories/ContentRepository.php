@@ -12,30 +12,30 @@ class ContentRepository
     {
         $this->pdo = $pdo;
     }
-    
+
     private function getFields($contentTypeName) : Collection
     {
         $fieldsTable = $this->makeFieldsTableName($contentTypeName);
         $sql = 'SELECT * FROM ?';
-        
+
         $result = $this->pdo->prepare($sql);
-        
+
         $result->execute([$fieldsTable]);
-        
+
         $fields = $result->fetchAll(\PDO::FETCH_ASSOC);
-        
+
         $fieldCollection = new Collection;
-        
+
         if ($fields !== null) {
             foreach ($fields as $field) {
                 $fieldCollection->set($field['type'], $field)
             }
         }
-        
+
         return $fieldCollection;
     }
-    
-    public function getFieldsValuesById(string $contentTypeName, int $contentId, string $language)
+
+    public function getFieldsValuesById(string $contentTypeName, int $contentId, string $language) : Collection
     {
         $contentTableName = strtolower($contentTypeName);
         $valuesTable = $this->makeValuesTableName($contentTypeName);
@@ -45,7 +45,7 @@ class ContentRepository
                'ON values.content_id = content.id ' .
                'WHERE content.id = :content_id ' .
                'AND language = :language';
-               
+
         $result = $this->pdo->prepare($sql);
 
         $result->bindParam(':content_table', $contentTableName, \PDO::PARAM_STR);
@@ -54,14 +54,14 @@ class ContentRepository
         $result->bindParam(':language', $language, \PDO::PARAM_STR);
 
         $result->execute();
-        
+
         $data = $result->fetch(\PDO::FETCH_ASSOC);
-        
-        if ($data !== null) {
-            return new Collection($data);
+
+        if ($data === null) {
+            return new Collection;
         }
-        
-        return new Collection;
+
+        return new Collection($data);
     }
 
     protected function makeFieldsTableName(string $contentTypeName) : string

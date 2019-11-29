@@ -16,9 +16,9 @@ class GetContentListAction extends AbstractAction
     protected $actionProvider;
 
     protected $contentBuilder;
-    
+
     protected $filter;
-    
+
     protected $sort;
 
     public function __construct(RepositoryBundle $repository, FillFieldProvider $actionProvider, ContentBuilder $contentBuilder)
@@ -27,7 +27,7 @@ class GetContentListAction extends AbstractAction
         $this->actionProvider = $actionProvider;
         $this->contentBuilder = $contentBuilder;
     }
-    
+
     public function execute(string $contentTypeName) : ContentList
     {
         $contentType = $this->repository->getContentType($contentTypeName);
@@ -38,15 +38,16 @@ class GetContentListAction extends AbstractAction
 
         $fields = $this->repository->getFields($contentTypeName);
         $fieldsValues = $this->repository->getFieldsValuesList($contentType, $this->filter, $this->sort, $this->language);
-        
+
         $generator = (function() use ($fieldsValues) {
             foreach ($fieldsValues as $value) {
                 yield from $value;
             }
         })();
-        
+
         $contentData = [];
-        
+        $contentList = [];
+
         foreach ($generator as $fieldType => $value) {
             if ($fields->has($fieldType)) {
                 $fieldData = $this->actionProvider->createFieldData($fields->get($fieldType));
@@ -55,15 +56,17 @@ class GetContentListAction extends AbstractAction
                 continue;
             }
             $contentData[$fieldType] = $this->actionProvider->createFieldWithoutHandler($value);
+            $contentList[$contentData['id']] = $this->contentBuilder->createContent($contentData);
         }
+        return $this->contentBuilder->createList($contentList);
     }
-    
+
     public function filter(array $filter) : self
     {
         $this->filter = $filter;
         return $this;
     }
-    
+
     public function sort(array $sort) : self
     {
         $this->sort = $sort;
