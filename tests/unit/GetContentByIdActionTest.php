@@ -6,7 +6,7 @@ namespace Marussia\Content\Test;
 
 use Marussia\Content\Actions\GetContentByIdAction;
 use Marussia\Content\RepositoryBundle;
-use Marussia\Content\Actions\Providers\GetContentByIdProvider;
+use Marussia\Content\Actions\Providers\FillFieldProvider;
 use Marussia\Content\ViewModels\Content;
 use Marussia\Content\ContentBuilder;
 use Marussia\Content\Entities\ContentType;
@@ -32,12 +32,12 @@ class GetContentByIdActionTest extends TestCase
         $this->assertInstanceOf(Content::class, $action->execute($contentTypeName, $contentId));
     }
     
-    private function actionProvider() : GetContentByIdProvider
+    private function actionProvider() : FillFieldProvider
     {
         $fieldData = Mockery::mock(FieldData::class);
         $field = Mockery::mock(Field::class);
         
-        $actionProvider = Mockery::mock(GetContentByIdProvider::class);
+        $actionProvider = Mockery::mock(FillFieldProvider::class);
         $actionProvider->shouldReceive([
             'createFieldData' => $fieldData,
             'fillField' => $field,

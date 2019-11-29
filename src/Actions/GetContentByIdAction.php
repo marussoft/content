@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Marussia\Content\Actions;
 
 use Marussia\Content\RepositoryBundle as Repository;
-use Marussia\Content\Actions\Providers\GetContentByIdProvider as ActionProvider;
+use Marussia\Content\Actions\Providers\FillFieldProvider as ActionProvider;
 use Marussia\Content\ViewModels\Content;
 use Marussia\Content\ContentBuilder;
 

@@ -35,4 +35,10 @@ class RepositoryBundle
     {
         return $this->contentRepository->getFieldsValuesById($contentTypeName, $contentId, $language);
     }
+    
+    public function getFieldsValuesList(ContentType $contentType, array $filter, array $sort, array $language) : Collection
+    {
+        return $this->contentRepository->getFieldsValuesList($contentType, $filter, $sort, $language);
+    }
+
 }

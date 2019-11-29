@@ -9,7 +9,7 @@ use Marussia\ContentField\FieldDataFactory;
 use Marussia\ContentField\Field;
 use Marussia\ContentField\FieldData;
 
-class GetContentByIdProvider
+class FillFieldProvider
 {
     protected $fillFieldAction;
 
