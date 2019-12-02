@@ -53,10 +53,11 @@ class GetContentListAction extends AbstractAction
                 $fieldData = $this->actionProvider->createFieldData($fields->get($fieldType));
                 $fieldData->value = $value;
                 $contentData[$fieldType] = $this->actionProvider->fillField($fieldData);
-                continue;
+            } else {
+                $contentData[$fieldType] = $this->actionProvider->createFieldWithoutHandler($value);
             }
-            $contentData[$fieldType] = $this->actionProvider->createFieldWithoutHandler($value);
-            $contentList[$contentData['id']] = $this->contentBuilder->createContent($contentData);
+            $currentField = $generator->corrent();
+            $contentList[$currentField['content_id']][$fieldType] = $this->contentBuilder->createContent($contentData);
         }
         return $this->contentBuilder->createList($contentList);
     }
