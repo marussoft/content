@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Marussia\Content;
 
-use Marussia\Content\ViewModels\Content;
+use Marussia\Content\Content;
 
 class ContentBuilder
 {
