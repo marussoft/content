@@ -13,7 +13,7 @@ class PageRepository
         $this->pdo = $pdo;
     }
 
-    private function getFields($pageId) : Collection
+    public function getFields($pageId) : Collection
     {
         $sql = 'SELECT * FROM pages_values WHERE page_id = ?';
 
@@ -58,10 +58,23 @@ class PageRepository
 
         return new Collection($data);
     }
-    
+
+    public function addPage($page) : bool
+    {
+        $sql = 'INSERT INTO pages (name, slug, title, options) VALUES (:name, :slug, :title, :options)';
+
+        $result = $this->pdo->prepare($sql);
+
+        $result->bindParam(':name', $page->name, \PDO::PARAM_STR);
+        $result->bindParam(':slug', $page->slug, \PDO::PARAM_STR);
+        $result->bindParam(':title', $page->title, \PDO::PARAM_STR);
+        $result->bindParam(':options', $page->options, \PDO::PARAM_STR);
+        return $result->execute();
+    }
+
     protected function makeValuesTableName(string $pageName) : string
     {
         return strtolower('page_' . $pageName . '_fields_values');
     }
 }
- 
+

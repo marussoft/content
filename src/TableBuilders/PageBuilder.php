@@ -12,7 +12,7 @@ class PageBuilder
     {
         $this->pdo = $pdo;
     }
-    
+
     public function beginTransaction() : self
     {
         $this->pdo->beginTransaction();
@@ -25,22 +25,26 @@ class PageBuilder
         return $this;
     }
 
-    
+    public function rollBack() : void
+    {
+        $this->pdo->rollBack();
+    }
+
     public function createPageValuesTable(string $pageName)
     {
         $valuesTableName = $this->makeValuesTableName($pageName);
-    
+
         $sql = 'CREATE TABLE IF NOT EXISTS :page_values_table (' .
             'id SERIAL PRIMARY KEY, ' .
-            'lang VARCHAR(10) NOT NULL)';
+            'language VARCHAR(10) NOT NULL)';
 
         $result = $this->pdo->prepare($sql);
 
         $result->bindParam(':page_values_table', $valuesTable, \PDO::PARAM_STR);
-            
+
         $result->execute();
     }
-    
+
     public function createPagesTable()
     {
         $sql = 'CREATE TABLE IF NOT EXISTS pages (' .
@@ -54,7 +58,7 @@ class PageBuilder
 
         $this->pdo->exec($sql);
     }
-    
+
     public function createFieldsTable()
     {
         $sql = 'CREATE TABLE IF NOT EXISTS pages_fields (' .
