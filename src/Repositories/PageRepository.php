@@ -58,11 +58,10 @@ class PageRepository
 
         return new Collection($data);
     }
-
+    
     protected function makeValuesTableName(string $pageName) : string
     {
-        return strtolower('page_' . $pageName . '_field_values');
+        return strtolower('page_' . $pageName . '_fields_values');
     }
-
 }
  
