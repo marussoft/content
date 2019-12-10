@@ -42,8 +42,6 @@ class PageBuilder
 
         $result = $this->pdo->prepare($sql);
 
-//         $result->bindParam(':page_values_table', $valuesTableName, \PDO::PARAM_STR);
-
         $result->execute();
     }
 
@@ -75,5 +73,10 @@ class PageBuilder
             'hidden BOOLEAN DEFAULT FALSE)';
 
         $this->pdo->exec($sql);
+    }
+
+    public function createFieldValue($pageName, $fieldName, $dataType) : bool
+    {
+        $sql = '';
     }
 }
