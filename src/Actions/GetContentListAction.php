@@ -56,7 +56,7 @@ class GetContentListAction extends AbstractAction
             } else {
                 $contentData[$fieldType] = $this->actionProvider->createFieldWithoutHandler($value);
             }
-            $currentField = $generator->corrent();
+            $currentField = $generator->current();
             $contentList[$currentField['content_id']][$fieldType] = $this->contentBuilder->createContent($contentData);
         }
         return $this->contentBuilder->createList($contentList);

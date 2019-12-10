@@ -65,7 +65,7 @@ class CreatePageAction
     public function name(string $pageName)
     {
         if (preg_match('/.*/', $pageName);) { // ошибка в регулярке
-            throw new PageNameInvalidCharactersException($slug);
+            throw new PageNameInvalidCharactersException($pageName);
         }
         $this->pageName = $pageName;
         return $this;
