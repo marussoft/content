@@ -7,9 +7,12 @@ namespace Marussia\Content\Repositories;
 use Marussia\Content\Collection;
 use Marussia\Content\PageFactory;
 use Marussia\Content\Entities\Page;
+use Marussia\Content\TableBuilders\NameBuilderTrait;
 
 class PageRepository
 {
+    use NameBuilderTrait;
+    
     private $pdo;
     
     private $pageFactory;
@@ -34,11 +37,31 @@ class PageRepository
             return null;
         }
 
+        return $this->pageFactory->createFromArray($pageData);
+    }
+
+    public function getPageByName(string $pageName) : ?Page
+    {
+        $sql = 'SELECT * FROM pages WHERE name = :name';
+        
+        $result = $this->pdo->prepare($sql);
+        
+        $result->bindParam(':name', $pageName, \PDO::PARAM_STR);
+        
+        $result->execute();
+        
+        $pageData = $result->fetch(\PDO::FETCH_ASSOC);
+        
+        $page = null;
+        
+        if ($pageData === false) {
+            return $page;
+        }
+
         $page = $this->pageFactory->createFromArray($pageData);
         
         return $page;
     }
-
     
     public function getFields(int $pageId) : Collection
     {
@@ -54,7 +77,7 @@ class PageRepository
 
         if ($fields !== null) {
             foreach ($fields as $field) {
-                $fieldCollection->set($field['type'], $field)
+                $fieldCollection->set($field['type'], $field);
             }
         }
 
@@ -97,11 +120,6 @@ class PageRepository
         $result->bindParam(':title', $page->title, \PDO::PARAM_STR);
         $result->bindParam(':options', $page->options, \PDO::PARAM_STR);
         return $result->execute();
-    }
-
-    protected function makeValuesTableName(string $pageName) : string
-    {
-        return strtolower('page_' . $pageName . '_fields_values');
     }
 }
 

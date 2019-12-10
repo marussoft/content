@@ -6,6 +6,8 @@ namespace Marussia\Content\TableBuilders;
 
 class PageBuilder
 {
+    use NameBuilderTrait;
+
     private $pdo;
 
     public function __construct(\PDO $pdo)
@@ -34,13 +36,13 @@ class PageBuilder
     {
         $valuesTableName = $this->makeValuesTableName($pageName);
 
-        $sql = 'CREATE TABLE IF NOT EXISTS :page_values_table (' .
+        $sql = 'CREATE TABLE IF NOT EXISTS ' . $valuesTableName . '(' .
             'id SERIAL PRIMARY KEY, ' .
             'language VARCHAR(10) NOT NULL)';
 
         $result = $this->pdo->prepare($sql);
 
-        $result->bindParam(':page_values_table', $valuesTable, \PDO::PARAM_STR);
+//         $result->bindParam(':page_values_table', $valuesTableName, \PDO::PARAM_STR);
 
         $result->execute();
     }
@@ -50,6 +52,7 @@ class PageBuilder
         $sql = 'CREATE TABLE IF NOT EXISTS pages (' .
             'id SERIAL PRIMARY KEY, ' .
             'name VARCHAR(255) NOT NULL UNIQUE, ' .
+            'slug VARCHAR(255) NOT NULL, ' .
             'title VARCHAR(255) NOT NULL, ' .
             'options JSONB, ' .
             'is_active BOOLEAN DEFAULT TRUE, ' .
@@ -69,7 +72,7 @@ class PageBuilder
             'title VARCHAR(255) NOT NULL, ' .
             'options JSONB, ' .
             'is_active BOOLEAN DEFAULT TRUE, ' .
-            'hidden BOOLEAN DEFAULT FALSE';
+            'hidden BOOLEAN DEFAULT FALSE)';
 
         $this->pdo->exec($sql);
     }

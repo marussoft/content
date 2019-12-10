@@ -29,7 +29,7 @@ class CreatePageAction
     public function __construct(PageBuilder $builder, PageRepository $repository, PageFactory $factory)
     {
         $this->builder = $builder;
-        $this->repository = $pageRepository;
+        $this->repository = $repository;
         $this->factory = $factory;
     }
 
@@ -49,9 +49,6 @@ class CreatePageAction
 
         try {
             $this->builder->beginTransaction();
-            $this->builder->createPagesTable();
-            $this->builder->createFieldsTable();
-
             $this->builder->createPageValuesTable($this->pageName);
             $this->builder->commit();
         } catch (\Throwable $exception) {
@@ -64,18 +61,20 @@ class CreatePageAction
 
     public function name(string $pageName) : self
     {
-        if (preg_match('/.*/', $pageName);) { // ошибка в регулярке
-            throw new PageNameInvalidCharactersException($pageName);
-        }
+//         if (preg_match('/.*/', $pageName)) { // ошибка в регулярке
+//             throw new PageNameInvalidCharactersException($pageName);
+//         }
+
         $this->pageName = $pageName;
         return $this;
     }
 
     public function slug(string $slug) : self
     {
-        if (preg_match('/[^0-9_]/i', $slug);) {
-            throw new SlugInvalidCharactersException($slug);
-        }
+//         if (preg_match('/[^0-9_]/i', $slug)) {
+//             throw new SlugInvalidCharactersException($slug);
+//         }
+
         $this->slug = $slug;
         return $this;
     }
