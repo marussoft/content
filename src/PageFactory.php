@@ -28,7 +28,7 @@ class PageFactory
         $page->name = $data['name'];
         $page->slug = $data['slug'];
         $page->title = $data['title'];
-        $page->options = json_encode($options, JSON_UNESCAPED_UNICODE);
+        $page->options = json_encode($data['options'], JSON_UNESCAPED_UNICODE);
 
         return $page;
     }

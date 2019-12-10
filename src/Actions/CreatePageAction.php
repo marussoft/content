@@ -62,7 +62,7 @@ class CreatePageAction
         return $this->repository->addPage($page);
     }
 
-    public function name(string $pageName)
+    public function name(string $pageName) : self
     {
         if (preg_match('/.*/', $pageName);) { // ошибка в регулярке
             throw new PageNameInvalidCharactersException($pageName);
