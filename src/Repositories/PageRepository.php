@@ -5,17 +5,44 @@ declare(strict_types=1);
 namespace Marussia\Content\Repositories;
 
 use Marussia\Content\Collection;
+use Marussia\Content\PageFactory;
+use Marussia\Content\Entities\Page;
 
 class PageRepository
 {
-    public function __construct(\PDO $pdo)
+    private $pdo;
+    
+    private $pageFactory;
+
+    public function __construct(\PDO $pdo, PageFactory $pageFactory)
     {
         $this->pdo = $pdo;
+        $this->pageFactory = $pageFactory;
     }
 
-    public function getFields($pageId) : Collection
+    public function getPageById(int $pageId) : ?Page
     {
-        $sql = 'SELECT * FROM pages_values WHERE page_id = ?';
+        $sql = 'SELECT * FROM pages WHERE page_id = ?';
+
+        $result = $this->pdo->prepare($sql);
+
+        $result->execute([$pageId]);
+
+        $pageData = $result->fetchAll(\PDO::FETCH_ASSOC);
+        
+        if ($pageData === null) {
+            return null;
+        }
+
+        $page = $this->pageFactory->createFromArray($pageData);
+        
+        return $page;
+    }
+
+    
+    public function getFields(int $pageId) : Collection
+    {
+        $sql = 'SELECT * FROM pages_fields WHERE page_id = ?';
 
         $result = $this->pdo->prepare($sql);
 
