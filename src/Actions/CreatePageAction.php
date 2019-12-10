@@ -52,7 +52,7 @@ class CreatePageAction
             $this->builder->createPagesTable();
             $this->builder->createFieldsTable();
 
-            $this->builder->createPageValuesTable($name);
+            $this->builder->createPageValuesTable($this->pageName);
             $this->builder->commit();
         } catch (\Throwable $exception) {
             $this->builder->rollBack();
