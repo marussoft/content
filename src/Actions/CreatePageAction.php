@@ -33,7 +33,7 @@ class CreatePageAction
         $this->factory = $factory;
     }
 
-    public function execute(string $title) : bool
+    public function execute() : bool
     {
         if (strlen($this->pageName) === 0) {
             throw new PageNameNotSetException;
@@ -58,7 +58,7 @@ class CreatePageAction
             $this->builder->rollBack();
             throw new CreatePageActionException($exception);
         }
-        $page = $this->factory->create($this->pageName, $this->slug, $title, $this->options);
+        $page = $this->factory->create($this->pageName, $this->slug, $this->title, $this->options);
         return $this->repository->addPage($page);
     }
 
