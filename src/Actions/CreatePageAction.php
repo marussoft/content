@@ -64,6 +64,7 @@ class CreatePageAction
 //         if (preg_match('/.*/', $pageName)) { // ошибка в регулярке
 //             throw new PageNameInvalidCharactersException($pageName);
 //         }
+
         $this->pageName = $pageName;
         return $this;
     }
@@ -73,6 +74,7 @@ class CreatePageAction
 //         if (preg_match('/[^0-9_]/i', $slug)) {
 //             throw new SlugInvalidCharactersException($slug);
 //         }
+
         $this->slug = $slug;
         return $this;
     }
