@@ -40,20 +40,20 @@ class GetPageByIdAction
                 yield from $value;
             }
         })();
-        
+
         $contentData = [];
 
-        foreach ($fieldsValues as $fieldType => $value) {
+        foreach ($generator as $fieldType => $value) {
             if ($fields->has($fieldType)) {
                 $fieldData = $this->actionProvider->createFieldData($fields->get($fieldType));
                 $fieldData->value = $value;
                 $contentData[$fieldType] = $this->actionProvider->fillField($fieldData);
-            } else {
-                $contentData[$fieldType] = $this->actionProvider->createFieldWithoutHandler($value);
+                continue;
             }
+            $contentData[$fieldType] = $this->actionProvider->createFieldWithoutHandler($value);
         }
 
         return $this->contentBuilder->createContent($contentData);
     }
 }
- 
+
