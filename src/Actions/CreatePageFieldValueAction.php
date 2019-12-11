@@ -46,15 +46,15 @@ class CreatePageFieldValueAction
         return $this->builder->createFieldValue($this->pageName, $this->fieldName, $dataType);
     }
 
-    public function bool(bool $value = true) : self
+    public function boolean(bool $value = true) : self
     {
-        $this->dataType['bool'] = $value;
+        $this->dataType['boolean'] = $value;
         return $this;
     }
 
-    public function string(int $size) : self
+    public function character(int $size = 0) : self
     {
-        $this->dataType['string'] = $size;
+        $this->dataType['character'] = $size;
         return $this;
     }
 
