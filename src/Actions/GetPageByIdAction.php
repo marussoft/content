@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Marussia\Content\Actions;
 
-use Marussia\Content\Bundles\PageById as Repository;
+use Marussia\Content\Repositories\PageRepository;
 use Marussia\Content\Actions\Providers\FillFieldProvider as ActionProvider;
 use Marussia\Content\Content;
 use Marussia\Content\ContentBuilder;
 
-class GetPageByIdAction
+class GetPageByIdAction extends AbstractAction
 {
     protected $repository;
 
@@ -17,7 +17,7 @@ class GetPageByIdAction
 
     protected $contentBuilder;
 
-    public function __construct(Repository $repository, ActionProvider $actionProvider, ContentBuilder $contentBuilder)
+    public function __construct(PageRepository $repository, ActionProvider $actionProvider, ContentBuilder $contentBuilder)
     {
         $this->repository = $repository;
         $this->actionProvider = $actionProvider;
@@ -33,17 +33,12 @@ class GetPageByIdAction
         }
 
         $fields = $this->repository->getFields($pageId);
-        $fieldsValues = $this->repository->getFieldsValuesById($page['pageName'], $contentId, $this->language);
-
-        $generator = (function() use ($fieldsValues) {
-            foreach ($fieldsValues as $value) {
-                yield from $value;
-            }
-        })();
+        $fieldsValues = $this->repository->getFieldsValuesById($page->name, $this->language);
 
         $contentData = [];
 
-        foreach ($generator as $fieldType => $value) {
+        foreach ($fieldsValues->all() as $fieldType => $value) {
+
             if ($fields->has($fieldType)) {
                 $fieldData = $this->actionProvider->createFieldData($fields->get($fieldType));
                 $fieldData->value = $value;
@@ -56,4 +51,3 @@ class GetPageByIdAction
         return $this->contentBuilder->createContent($contentData);
     }
 }
-

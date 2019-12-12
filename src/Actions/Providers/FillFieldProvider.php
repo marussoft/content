@@ -8,6 +8,7 @@ use Marussia\ContentField\Actions\FillAction;
 use Marussia\ContentField\FieldDataFactory;
 use Marussia\ContentField\Field;
 use Marussia\ContentField\FieldData;
+use Marussia\ContentField\FieldFactory;
 
 class FillFieldProvider
 {
@@ -36,7 +37,6 @@ class FillFieldProvider
 
     public function createFieldWithoutHandler($value) : Field
     {
-        return $this->fieldFactory(['value' => $value]);
+        return $this->fieldFactory->create(['html' => $value]);
     }
-
 }

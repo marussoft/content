@@ -43,11 +43,11 @@ class CreatePageFieldValueAction
 
         $dataType = count($this->dataType) === 0 ? $this->getDataType->execute($this->fieldType) : $this->dataType;
 
-        try (
+        try {
             $this->builder->beginTransaction();
             $this->builder->createFieldValue($this->pageName, $this->fieldName, $dataType);
             $this->builder->commit();
-        ) catch (\Throwable $exception) {
+        } catch (\Throwable $exception) {
             $this->builder->rollBack();
             throw $exception;
         }

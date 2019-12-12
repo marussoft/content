@@ -25,7 +25,7 @@ trait DataTypeBuilderTrait
         }
         return $type;
     }
-    
+
     private function createCharacterType(int $size) : string
     {
         if ($size === 0) {
@@ -33,7 +33,7 @@ trait DataTypeBuilderTrait
         }
         return 'VARCHAR(' . strval($size) . ')';
     }
-    
+
     private function createBooleanType(bool $value) : string
     {
         $default = $value ? 'TRUE' : 'FALSE';
@@ -42,7 +42,6 @@ trait DataTypeBuilderTrait
 
     private function createIntegerType(int $size) : string
     {
-        return $size < 32767 ? 'SMALLINT' : 'INTEGER';
+        return $size <= 5 ? 'SMALLINT' : 'INTEGER';
     }
 }
- 
