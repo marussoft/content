@@ -5,31 +5,23 @@ declare(strict_types=1);
 namespace Marussia\Content\Actions;
 
 use Marussia\Content\Repositories\PageRepository;
-use Marussia\Content\Actions\Providers\FillFieldProvider as ActionProvider;
-use Marussia\Content\Content;
-use Marussia\Content\ContentBuilder;
+use Marussia\Content\Entities\Page;
 
-class GetPageByIdAction extends AbstractAction
+class GetPageBySlugAction extends AbstractAction
 {
-    protected $repository;
+    private $repository;
 
-    protected $actionProvider;
-
-    protected $contentBuilder;
-
-    public function __construct(PageRepository $repository, ActionProvider $actionProvider, ContentBuilder $contentBuilder)
+    public function __construct(PageRepository $repository)
     {
         $this->repository = $repository;
-        $this->actionProvider = $actionProvider;
-        $this->contentBuilder = $contentBuilder;
     }
 
-    public function execute(int $pageId) : Content
+    public function execute(string $pageSlug) : ?Page
     {
-        $page = $this->repository->getPageById($pageId);
+        $page = $this->repository->getPageBySlug($pageSlug);
 
         if ($page === null) {
-            throw new PageNotFoundException($pageId);
+            throw new PageNotFoundException($pageSlug);
         }
 
         $fields = $this->repository->getFields($page->id);

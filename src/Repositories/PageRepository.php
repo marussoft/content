@@ -41,13 +41,13 @@ class PageRepository
         return $this->pageFactory->createFromArray($pageData);
     }
 
-    public function getPageByName(string $pageName) : ?Page
+    public function getPageBySlug(string $pageSlug) : ?Page
     {
-        $sql = 'SELECT * FROM pages WHERE name = :name';
+        $sql = 'SELECT * FROM pages WHERE slug = :slug';
 
         $result = $this->pdo->prepare($sql);
 
-        $result->bindParam(':name', $pageName, \PDO::PARAM_STR);
+        $result->bindParam(':name', $pageSlug, \PDO::PARAM_STR);
 
         $result->execute();
 
@@ -78,14 +78,14 @@ class PageRepository
 
         if ($fields !== null) {
             foreach ($fields as $field) {
-                $fieldCollection->set($field['type'], $field);
+                $fieldCollection->set($field['name'], $field);
             }
         }
 
         return $fieldCollection;
     }
 
-    public function getFieldsValuesById(string $pageName, string $language) : Collection
+    public function getFieldsValues(string $pageName, string $language) : Collection
     {
         $valuesTable = $this->makeValuesTableName($pageName);
         $sql = 'SELECT * FROM ' . $valuesTable . ' ' .
