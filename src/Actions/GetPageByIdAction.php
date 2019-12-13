@@ -24,12 +24,12 @@ class GetPageByIdAction extends AbstractAction
         $this->contentBuilder = $contentBuilder;
     }
 
-    public function execute(int $pageId) : Content
+    public function execute(int $pageId) : ?Content
     {
         $page = $this->repository->getPageById($pageId);
 
         if ($page === null) {
-            throw new PageNotFoundException($pageId);
+            return $page;
         }
 
         $fields = $this->repository->getFields($page->id);
@@ -45,7 +45,7 @@ class GetPageByIdAction extends AbstractAction
                 $contentData[$fieldName] = $this->actionProvider->fillField($fieldData);
                 continue;
             }
-            $contentData[$fieldName] = $this->actionProvider->createFieldWithoutHandler($value);
+            $contentData[$fieldName] = $this->actionProvider->createFieldWithoutHandler($fieldName, $value);
         }
 
         $contentData['id'] = $page->id;

@@ -35,8 +35,8 @@ class FillFieldProvider
         return $this->fillFieldAction->execute($fieldData);
     }
 
-    public function createFieldWithoutHandler($value) : Field
+    public function createFieldWithoutHandler(string $name, $value) : Field
     {
-        return $this->fieldFactory->create(['html' => $value]);
+        return $this->fieldFactory->create(['name' => $name, 'value' => $value]);
     }
 }

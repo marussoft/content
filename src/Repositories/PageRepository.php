@@ -32,13 +32,14 @@ class PageRepository
 
         $result->execute([$pageId]);
 
-        $pageData = $result->fetch(\PDO::FETCH_ASSOC);
-
-        if ($pageData === null) {
-            return null;
+        $page = null;
+        
+        if ($result->execute([$pageId])) {
+            $pageData = $result->fetch(\PDO::FETCH_ASSOC);
+            $page = $this->pageFactory->createFromArray($pageData);
         }
 
-        return $this->pageFactory->createFromArray($pageData);
+        return $page;
     }
 
     public function getPageBySlug(string $pageSlug) : ?Page
@@ -47,19 +48,14 @@ class PageRepository
 
         $result = $this->pdo->prepare($sql);
 
-        $result->bindParam(':name', $pageSlug, \PDO::PARAM_STR);
-
-        $result->execute();
-
-        $pageData = $result->fetch(\PDO::FETCH_ASSOC);
+        $result->bindParam(':slug', $pageSlug, \PDO::PARAM_STR);
 
         $page = null;
 
-        if ($pageData === false) {
-            return $page;
+        if ($result->execute()) {
+            $pageData = $result->fetch(\PDO::FETCH_ASSOC);
+            $page = $this->pageFactory->createFromArray($pageData);
         }
-
-        $page = $this->pageFactory->createFromArray($pageData);
 
         return $page;
     }
@@ -88,6 +84,7 @@ class PageRepository
     public function getFieldsValues(string $pageName, string $language) : Collection
     {
         $valuesTable = $this->makeValuesTableName($pageName);
+        
         $sql = 'SELECT * FROM ' . $valuesTable . ' ' .
                'WHERE language = :language';
 
@@ -99,7 +96,7 @@ class PageRepository
 
         $data = $result->fetch(\PDO::FETCH_ASSOC);
 
-        if ($data === null) {
+        if ($data === false) {
             return new Collection;
         }
 
