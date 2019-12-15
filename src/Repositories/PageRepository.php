@@ -33,7 +33,7 @@ class PageRepository
         $result->execute([$pageId]);
 
         $page = null;
-        
+
         if ($result->execute([$pageId])) {
             $pageData = $result->fetch(\PDO::FETCH_ASSOC);
             $page = $this->pageFactory->createFromArray($pageData);
@@ -84,7 +84,7 @@ class PageRepository
     public function getFieldsValues(string $pageName, string $language) : Collection
     {
         $valuesTable = $this->makeValuesTableName($pageName);
-        
+
         $sql = 'SELECT * FROM ' . $valuesTable . ' ' .
                'WHERE language = :language';
 
@@ -145,5 +145,25 @@ class PageRepository
         }
         $content->id  = $result->execute();
         return $content;
+    }
+
+    public function getAll() : Collection
+    {
+        $sql = 'SELECT * FROM pages';
+
+        $result = $this->pdo->prepare($sql);
+
+        $collections = new Collection;
+
+        if ($this->result->execute()) {
+            $rawData = $result->fetchAll(\PDO::FETCH_ASSOC);
+
+            foreach ($rawData as $data) {
+                $page = $this->pageFactory->createFromArray($data);
+                $collection->set($page->name, $page);
+            }
+        }
+
+        return $collection;
     }
 }
