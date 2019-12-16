@@ -55,6 +55,7 @@ class PageBuilder
             'title VARCHAR(255) NOT NULL, ' .
             'options JSONB, ' .
             'is_active BOOLEAN DEFAULT TRUE, ' .
+            'is_deleted BOOLEAN DEFAULT FALSE' .
             'created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), ' .
             'updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())';
 

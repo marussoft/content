@@ -13,6 +13,8 @@ class Page
     public $title;
 
     public $slug;
+    
+    public $isActive;
 
     public $options = [];
 }

@@ -28,6 +28,7 @@ class PageFactory
         $page->name = $data['name'];
         $page->slug = $data['slug'];
         $page->title = $data['title'];
+        $page->isActive = $data['is_active'];
         $page->options = json_decode($data['options']);
 
         return $page;

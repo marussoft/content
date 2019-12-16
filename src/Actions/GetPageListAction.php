@@ -7,7 +7,7 @@ namespace Marussia\Content\Actions;
 use Marussia\Content\Repositories\PageRepository;
 use Marussia\Content\Collection;
 
-class GetPageList
+class GetPageListAction
 {
     protected $repository;
 

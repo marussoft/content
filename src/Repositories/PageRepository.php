@@ -53,8 +53,12 @@ class PageRepository
         $page = null;
 
         if ($result->execute()) {
+        
             $pageData = $result->fetch(\PDO::FETCH_ASSOC);
-            $page = $this->pageFactory->createFromArray($pageData);
+        
+            if ($pageData !== false) {
+                $page = $this->pageFactory->createFromArray($pageData);
+            }
         }
 
         return $page;
@@ -153,9 +157,9 @@ class PageRepository
 
         $result = $this->pdo->prepare($sql);
 
-        $collections = new Collection;
+        $collection = new Collection;
 
-        if ($this->result->execute()) {
+        if ($result->execute()) {
             $rawData = $result->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($rawData as $data) {
