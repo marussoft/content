@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Marussia\Content\Actions;
 
 use Marussia\Content\Repositories\PageRepository;
+use Marussia\ContentField\Actions\ValidateFieldAction;
 use Marussia\Content\Content;
 
 class UpdatePageAction
@@ -22,8 +23,14 @@ class UpdatePageAction
 
     public function execute()
     {
-        if ($page === null) {
+        if ($this->page === null) {
             throw new PageForUpdateNotReceivedException;
+        }
+        
+        $fields = $this->repository->getFields($this->page->id);
+        
+        foreach ($fields as $field) {
+            
         }
 
         $this->repository->updatePage($this->page);
