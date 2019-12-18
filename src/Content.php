@@ -12,4 +12,15 @@ class Content
             $this->{$key} = $value;
         }
     }
-} 
+
+    public function isValid()
+    {
+        foreach ($this as $field) {
+            if (count($field->errors) > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

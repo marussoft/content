@@ -6,43 +6,72 @@ namespace Marussia\Content\Actions;
 
 use Marussia\Content\Repositories\PageRepository;
 use Marussia\ContentField\Actions\ValidateFieldAction;
+use Marussia\ContentField\Actions\CreateFieldDataAction;
 use Marussia\Content\Content;
 
 class UpdatePageAction
 {
     protected $repository;
 
-    protected $page = null;
+    protected $validateField;
+
+    protected $createFieldData;
+
+    protected $pageId;
 
     protected $data = [];
 
-    public function __construct(PageRepository $repository)
+    protected $createFieldData;
+
+    public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, ValidateFieldAction $validateField)
     {
         $this->repository = $repository;
+        $this->createFieldData = $createFieldData;
+        $this->validateField = $validateField;
     }
 
-    public function execute()
+    public function execute() : Content
     {
-        if ($this->page === null) {
-            throw new PageForUpdateNotReceivedException;
-        }
-        
-        $fields = $this->repository->getFields($this->page->id);
-        
-        foreach ($fields as $field) {
-            
+        if ($this->pageId === null) {
+            throw new PageIdForUpdateNotReceiptedException;
         }
 
-        $this->repository->updatePage($this->page);
+        $page = $this-repository->getPageById($this->pageId);
+
+        $fields = $this->repository->getFields($this->pageId);
+
+        $contentData = [];
+
+        foreach ($this->data as $fieldName => $updateData) {
+
+            if ($fields->has($fieldName)) {
+                $fieldData = $this->createFieldData->data($fields->get($fieldName))->execute();
+                $fieldData->value = $updateData;
+                $contentData[$fieldName] = $this->validateField->fieldData($fieldData)->execute();
+                continue;
+            }
+
+            $contentData[$fieldName] = $this->createFieldWithoutHandler($fieldName, $updateData);
+        }
+
+        $content = $this->contentBuilder->createContent($contentData);
+
+        if ($content->isValid()) {
+            $this->repository->updatePage($content);
+        }
+
+        return $content;
     }
 
-    public function page(Content $page)
+    public function pageId(int $pageId) : self
     {
-        $this->page = $page;
+        $this->pageId = $pageId;
+        return $this;
     }
 
-    public function updates(array $data)
+    public function updates(array $data) : self
     {
         $this->data = $data;
+        return $this;
     }
 }

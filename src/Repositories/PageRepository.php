@@ -53,9 +53,9 @@ class PageRepository
         $page = null;
 
         if ($result->execute()) {
-        
+
             $pageData = $result->fetch(\PDO::FETCH_ASSOC);
-        
+
             if ($pageData !== false) {
                 $page = $this->pageFactory->createFromArray($pageData);
             }
@@ -147,7 +147,10 @@ class PageRepository
 
             $result->bindParam(':' . $key, $value, $type);
         }
-        $content->id  = $result->execute();
+
+        $result->execute();
+
+        $content->id  = $result->lastInsertId();
         return $content;
     }
 
@@ -169,5 +172,33 @@ class PageRepository
         }
 
         return $collection;
+    }
+
+    public function updatePage(Content $content) : Content
+    {
+        foreach ($content as $fieldName => $value) {
+            $columns .= $fieldName . ', ';
+            $values .= ':' . $fieldName . ', ';
+        }
+
+        $valuesTable = $this->makeValuesTableName($pageName);
+        $sql = 'UPDATE SET ' . $valuesTable . ' (' . substr($columns,0,-2)  . ') VALUES (' . substr($values,0,-2) . ')';
+
+        $result = $this->pdo->prepare($sql);
+
+        $type = \PDO::PARAM_STR;
+
+        foreach ($content as $key => &$value) {
+
+            if (is_int($value)) {
+                $type = \PDO::PARAM_INT;
+            } elseif (is_bool($value)) {
+                $type = \PDO::PARAM_BOOL;
+            }
+
+            $result->bindParam(':' . $key, $value, $type);
+        }
+        $result->execute();
+        return $content;
     }
 }
