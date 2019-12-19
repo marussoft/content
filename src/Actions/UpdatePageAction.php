@@ -21,8 +21,6 @@ class UpdatePageAction
 
     protected $data = [];
 
-    protected $createFieldData;
-
     public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, ValidateFieldAction $validateField)
     {
         $this->repository = $repository;
@@ -36,7 +34,7 @@ class UpdatePageAction
             throw new PageIdForUpdateNotReceiptedException;
         }
 
-        $page = $this-repository->getPageById($this->pageId);
+        $page = $this->repository->getPageById($this->pageId);
 
         $fields = $this->repository->getFields($this->pageId);
 
