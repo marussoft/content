@@ -45,11 +45,11 @@ class UpdatePageAction
             if ($fields->has($fieldName)) {
                 $fieldData = $this->createFieldData->data($fields->get($fieldName))->execute();
                 $fieldData->value = $updateData;
-                $contentData[$fieldName] = $this->validateField->fieldData($fieldData)->execute();
+                $contentValues[$fieldName] = $this->validateField->fieldData($fieldData)->execute();
                 continue;
             }
 
-            $contentData[$fieldName] = $this->createFieldWithoutHandler($fieldName, $updateData);
+            $contentValues[$fieldName] = $this->createFieldValue($fieldName, $updateData);
         }
 
         $content = $this->contentBuilder->createContent($contentData);
