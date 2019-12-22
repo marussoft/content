@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Marussia\Content\Actions;
 
 use Marussia\Content\Repositories\PageRepository;
-use Marussia\ContentField\Actions\ValidateFieldAction;
+use Marussia\ContentField\Actions\CreateFieldInputAction;
 use Marussia\ContentField\Actions\CreateFieldDataAction;
 use Marussia\Content\Content;
 
-class UpdatePageAction
+class UpdatePageAction extends AbstractAction
 {
     protected $repository;
 
-    protected $validateField;
+    protected $createInput;
 
     protected $createFieldData;
 
@@ -21,11 +21,11 @@ class UpdatePageAction
 
     protected $data = [];
 
-    public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, ValidateFieldAction $validateField)
+    public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, CreateFieldInputAction $createInput)
     {
         $this->repository = $repository;
         $this->createFieldData = $createFieldData;
-        $this->validateField = $validateField;
+        $this->createInput = $createInput;
     }
 
     public function execute() : Content
@@ -45,17 +45,19 @@ class UpdatePageAction
             if ($fields->has($fieldName)) {
                 $fieldData = $this->createFieldData->data($fields->get($fieldName))->execute();
                 $fieldData->value = $updateData;
-                $contentValues[$fieldName] = $this->validateField->fieldData($fieldData)->execute();
+                $contentValues[$fieldName] = $this->createFieldInput->fieldData($fieldData)->execute();
                 continue;
             }
 
-            $contentValues[$fieldName] = $this->createFieldValue($fieldName, $updateData);
+            $contentValues[$fieldName] = $this->createFieldWithoutHandler($fieldName, $updateData);
         }
 
         $content = $this->contentBuilder->createContent($contentData);
 
+
+
         if ($content->isValid()) {
-            $this->repository->updatePage($content);
+            $this->repository->updatePage($this->data);
         }
 
         return $content;

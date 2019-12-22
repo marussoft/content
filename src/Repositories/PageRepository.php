@@ -174,7 +174,7 @@ class PageRepository
         return $collection;
     }
 
-    public function updatePage(Content $content) : Content
+    public function updatePage(array $content) : Content
     {
         foreach ($content as $fieldName => $value) {
             $columns .= $fieldName . ', ';
@@ -199,6 +199,7 @@ class PageRepository
             $result->bindParam(':' . $key, $value, $type);
         }
         $result->execute();
+
         return $content;
     }
 }
