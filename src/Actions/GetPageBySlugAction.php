@@ -58,7 +58,6 @@ class GetPageBySlugAction extends AbstractAction implements ActionInterface
         $contentData['id'] = $page->id;
         $contentData['name'] = $page->name;
         $contentData['slug'] = $page->slug;
-        $contentData['title'] = $page->title;
         $contentData['options'] = $page->options;
 
         return $this->contentBuilder->createContent($contentData);

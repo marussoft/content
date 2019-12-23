@@ -19,7 +19,7 @@ class GetPageByIdAction extends AbstractAction implements ActionInterface
     protected $contentBuilder;
 
     private $pageId;
-    
+
     public function __construct(PageRepository $repository, ActionProvider $actionProvider, ContentBuilder $contentBuilder)
     {
         $this->repository = $repository;
@@ -54,12 +54,11 @@ class GetPageByIdAction extends AbstractAction implements ActionInterface
         $contentData['id'] = $page->id;
         $contentData['name'] = $page->name;
         $contentData['slug'] = $page->slug;
-        $contentData['title'] = $page->title;
         $contentData['options'] = $page->options;
 
         return $this->contentBuilder->createContent($contentData);
     }
-    
+
     public function pageId(int $pageId) : self
     {
         $this->pageId = $pageId;
