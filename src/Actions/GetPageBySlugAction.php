@@ -8,14 +8,17 @@ use Marussia\Content\Actions\Providers\FillFieldProvider as ActionProvider;
 use Marussia\Content\Repositories\PageRepository;
 use Marussia\Content\Content;
 use Marussia\Content\ContentBuilder;
+use Marussia\Contracts\ActionInterface;
 
-class GetPageBySlugAction extends AbstractAction
+class GetPageBySlugAction extends AbstractAction implements ActionInterface
 {
-    protected $repository;
-    
-    protected $actionProvider;
-    
-    protected $contentBuilder;
+    private $repository;
+
+    private $actionProvider;
+
+    private $contentBuilder;
+
+    private $slug;
 
     public function __construct(PageRepository $repository, ActionProvider $actionProvider, ContentBuilder $contentBuilder)
     {
@@ -24,10 +27,14 @@ class GetPageBySlugAction extends AbstractAction
         $this->actionProvider = $actionProvider;
     }
 
-    public function execute(string $pageSlug) : ?Content
+    public function execute() : ?Content
     {
-        $page = $this->repository->getPageBySlug($pageSlug);
-        
+        if ($this->slug === null) {
+            throw new SlugForPageNotReceiptedExceptions;
+        }
+
+        $page = $this->repository->getPageBySlug($this->slug);
+
         if ($page === null) {
             return $page;
         }
@@ -55,5 +62,11 @@ class GetPageBySlugAction extends AbstractAction
         $contentData['options'] = $page->options;
 
         return $this->contentBuilder->createContent($contentData);
+    }
+
+    public function slug(string $slug) : self
+    {
+        $this->slug = $slug;
+        return $this;
     }
 }

@@ -11,7 +11,7 @@ use Marussia\ContentField\Actions\CreateFieldDataAction;
 use Marussia\Content\Content;
 use Marussia\Content\ContentBuilder;
 
-class UpdatePageAction extends AbstractAction implements ActionInterface
+class TranslatePageAction extends AbstractAction implements ActionInterface
 {
     private $repository;
 
@@ -23,7 +23,7 @@ class UpdatePageAction extends AbstractAction implements ActionInterface
 
     private $page;
 
-    private $data = [];
+    private $translation;
 
     public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, GetFieldWithoutHandler $getFieldWithoutHandler, ContentBuilder $contentBuilder)
     {
@@ -35,18 +35,21 @@ class UpdatePageAction extends AbstractAction implements ActionInterface
 
     public function execute() : Content
     {
+        if ($this->translation === null) {
+            throw new TranslationNotReceiptException;
+        }
+
         if ($this->page === null) {
-            throw new PageIdForUpdateNotReceiptedException;
+            throw new PageForTranslationNotReceiptException;
         }
 
         $fields = $this->repository->getFields($this->page->id);
 
         $contentValues = [];
 
-        foreach ($this->data as $fieldName => $updateData) {
-
+        foreach ($this->translation as $fieldName => $translate) {
             if (property_exists($this->page, $fieldName) === false) {
-                unset($this->data[$fieldName]);
+                throw new UnknownFieldFoTranslationException($fieldName);
                 continue;
             }
 
@@ -56,16 +59,12 @@ class UpdatePageAction extends AbstractAction implements ActionInterface
                 $contentValues[$fieldName] = $this->createFieldInput->fieldData($fieldData)->execute();
                 continue;
             }
-
-            $contentValues[$fieldName] = $this->getFieldWithoutHandler->value($updateData)->execute();
+            $contentValues[$fieldName] = $this->getFieldWithoutHandler->value($translation)->execute();
         }
 
         $content = $this->contentBuilder->createContent($contentValues);
 
-        if ($content->isValid() && count($this->data) > 0) {
-            $this->repository->updatePageValues($this->page->name, $this->data, $this->page->language->value);
-            $this->repository->updatePage($this->page->id, $this->data['is_active']);
-        }
+        $this->repository->addFieldsValues($page->name, $this->translation);
 
         return $content;
     }
@@ -76,9 +75,9 @@ class UpdatePageAction extends AbstractAction implements ActionInterface
         return $this;
     }
 
-    public function update(array $data) : self
+    public function translation(Translation $translation) : self
     {
-        $this->data = $data;
+        $this->translation = $translation;
         return $this;
     }
 }

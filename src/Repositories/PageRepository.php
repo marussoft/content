@@ -174,28 +174,28 @@ class PageRepository
         return $collection;
     }
 
-    public function updatePage(bool $isActive, string $options) : void
+    public function updatePage(int $pageId, bool $isActive) : void
     {
-        $sql = 'UPDATE pages SET is_active = :is_active, options = :options, updated_at = NOW()';
-        
+        $sql = 'UPDATE pages SET is_active = :is_active, updated_at = NOW() WHERE id = :page_id';
+
         $result = $this->pdo->prepare($sql);
         $result->bindParam(':is_active', $isActive, \PDO::PARAM_BOOL);
-        $result->bindParam(':options', $options, \PDO::PARAM_STR);
+        $result->bindParam(':page_id', $pageId, \PDO::PARAM_INT);
         $result->execute();
     }
 
-    
+
     public function updatePageValues(string $pageName, array $content, string $language) : void
     {
         $fields = '';
-    
+
         foreach ($content as $fieldName => $value) {
             $fields .= $fieldName . ' = :' . $fieldName . ', ';
         }
 
         $valuesTable = $this->makeValuesTableName($pageName);
         $sql = 'UPDATE ' . $valuesTable . ' SET ' . substr($fields,0,-2) . ' WHERE language = :language';
-        
+
         $result = $this->pdo->prepare($sql);
 
         $type = \PDO::PARAM_STR;
@@ -210,9 +210,9 @@ class PageRepository
 
             $result->bindParam(':' . $key, $value, $type);
         }
-        
+
         $result->bindParam(':language', $language, \PDO::PARAM_STR);
-        
+
         $result->execute();
     }
 }
