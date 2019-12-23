@@ -39,6 +39,7 @@ class PageBuilder
 
         $sql = 'CREATE TABLE IF NOT EXISTS ' . $valuesTableName . '(' .
             'id SERIAL PRIMARY KEY, ' .
+            'title VARCHAR(255) NOT NULL, ' .
             'language VARCHAR(10) NOT NULL)';
 
         $result = $this->pdo->prepare($sql);
@@ -52,7 +53,6 @@ class PageBuilder
             'id SERIAL PRIMARY KEY, ' .
             'name VARCHAR(255) NOT NULL UNIQUE, ' .
             'slug VARCHAR(255) NOT NULL, ' .
-            'title VARCHAR(255) NOT NULL, ' .
             'options JSONB, ' .
             'is_active BOOLEAN DEFAULT TRUE, ' .
             'is_deleted BOOLEAN DEFAULT FALSE' .

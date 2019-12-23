@@ -8,8 +8,9 @@ use Marussia\Content\Repositories\PageRepository;
 use Marussia\Content\Actions\Providers\FillFieldProvider as ActionProvider;
 use Marussia\Content\Content;
 use Marussia\Content\ContentBuilder;
+use Marussia\Contracts\ActionInterface;
 
-class GetPageByIdAction extends AbstractAction
+class GetPageByIdAction extends AbstractAction implements ActionInterface
 {
     protected $repository;
 
@@ -17,6 +18,8 @@ class GetPageByIdAction extends AbstractAction
 
     protected $contentBuilder;
 
+    private $pageId;
+    
     public function __construct(PageRepository $repository, ActionProvider $actionProvider, ContentBuilder $contentBuilder)
     {
         $this->repository = $repository;
@@ -24,9 +27,9 @@ class GetPageByIdAction extends AbstractAction
         $this->contentBuilder = $contentBuilder;
     }
 
-    public function execute(int $pageId) : ?Content
+    public function execute() : ?Content
     {
-        $page = $this->repository->getPageById($pageId);
+        $page = $this->repository->getPageById($this->pageId);
 
         if ($page === null) {
             return $page;
@@ -55,5 +58,11 @@ class GetPageByIdAction extends AbstractAction
         $contentData['options'] = $page->options;
 
         return $this->contentBuilder->createContent($contentData);
+    }
+    
+    public function pageId(int $pageId) : self
+    {
+        $this->pageId = $pageId;
+        return $this;
     }
 }

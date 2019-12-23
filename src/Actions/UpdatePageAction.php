@@ -4,44 +4,52 @@ declare(strict_types=1);
 
 namespace Marussia\Content\Actions;
 
+use Marussia\Contracts\ActionInterface;
 use Marussia\Content\Repositories\PageRepository;
-use Marussia\ContentField\Actions\CreateFieldInputAction;
+use Marussia\ContentField\Actions\GetFieldWithoutHandler;
 use Marussia\ContentField\Actions\CreateFieldDataAction;
 use Marussia\Content\Content;
+use Marussia\Content\ContentBuilder;
 
-class UpdatePageAction extends AbstractAction
+class UpdatePageAction extends AbstractAction implements ActionInterface
 {
     protected $repository;
 
-    protected $createInput;
+    protected $getFieldWithoutHandler;
 
     protected $createFieldData;
+    
+    protected $contentBuilder;
 
     protected $pageId;
 
     protected $data = [];
 
-    public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, CreateFieldInputAction $createInput)
+    public function __construct(PageRepository $repository, CreateFieldDataAction $createFieldData, GetFieldWithoutHandler $getFieldWithoutHandler, ContentBuilder $contentBuilder)
     {
         $this->repository = $repository;
         $this->createFieldData = $createFieldData;
-        $this->createInput = $createInput;
+        $this->getFieldWithoutHandler = $getFieldWithoutHandler;
+        $this->contentBuilder = $contentBuilder;
     }
 
     public function execute() : Content
     {
-        if ($this->pageId === null) {
+        if ($this->page === null) {
             throw new PageIdForUpdateNotReceiptedException;
         }
 
-        $page = $this->repository->getPageById($this->pageId);
-
-        $fields = $this->repository->getFields($this->pageId);
+        $fields = $this->repository->getFields($this->page->id);
 
         $contentData = [];
 
         foreach ($this->data as $fieldName => $updateData) {
 
+            if (property_exists($this->page, $fieldName) === false) {
+                unset($this->data[$fieldName]);
+                continue;
+            }
+        
             if ($fields->has($fieldName)) {
                 $fieldData = $this->createFieldData->data($fields->get($fieldName))->execute();
                 $fieldData->value = $updateData;
@@ -49,27 +57,25 @@ class UpdatePageAction extends AbstractAction
                 continue;
             }
 
-            $contentValues[$fieldName] = $this->createFieldWithoutHandler($fieldName, $updateData);
+            $contentValues[$fieldName] = $this->getFieldWithoutHandler->value($updateData);
         }
 
         $content = $this->contentBuilder->createContent($contentData);
-
-
-
-        if ($content->isValid()) {
-            $this->repository->updatePage($this->data);
+        
+        if ($content->isValid() && count($this->data) > 0) {
+            $this->repository->updatePageValues($this->page->name, $this->data, $this->page->language->value);
         }
-
+        
         return $content;
     }
 
-    public function pageId(int $pageId) : self
+    public function page(Content $page) : self
     {
-        $this->pageId = $pageId;
+        $this->page = $page;
         return $this;
     }
 
-    public function updates(array $data) : self
+    public function update(array $data) : self
     {
         $this->data = $data;
         return $this;

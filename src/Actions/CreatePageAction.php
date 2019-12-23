@@ -16,7 +16,9 @@ class CreatePageAction
 
     private $repository;
 
-    private $factory;
+    private $pageFactory;
+    
+    private $contentValue;
 
     private $pageName = '';
 
@@ -26,11 +28,12 @@ class CreatePageAction
 
     private $options = [];
 
-    public function __construct(PageBuilder $builder, PageRepository $repository, PageFactory $factory)
+    public function __construct(PageBuilder $builder, PageRepository $repository, PageFactory $factory, ContentFactory $contentValue)
     {
         $this->builder = $builder;
         $this->repository = $repository;
-        $this->factory = $factory;
+        $this->pageFactory = $pageFactory;
+        $this->contentValue = $contentValue;
     }
 
     public function execute() : bool
@@ -56,6 +59,8 @@ class CreatePageAction
             throw new CreatePageActionException($exception);
         }
         $page = $this->factory->create($this->pageName, $this->slug, $this->title, $this->options);
+        $content = $this->contentValue->create(['title' => $this->title, 'language' => $this->language]);
+        $this->repository->addFieldsValues($this->pageName, $content);
         return $this->repository->addPage($page);
     }
 
@@ -88,6 +93,12 @@ class CreatePageAction
     public function options(array $options) : self
     {
         $this->options = $options;
+        return $this;
+    }
+    
+    public function language(string $language) : self
+    {
+        $this->language = $language;
         return $this;
     }
 }
