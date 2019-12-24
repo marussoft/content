@@ -54,8 +54,9 @@ class GetPageByIdAction extends AbstractAction implements ActionInterface
         $contentData['id'] = $page->id;
         $contentData['name'] = $page->name;
         $contentData['slug'] = $page->slug;
+        $contentData['is_active'] = $page->isActive;
         $contentData['options'] = $page->options;
-
+        
         return $this->contentBuilder->createContent($contentData);
     }
 

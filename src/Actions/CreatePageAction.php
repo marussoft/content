@@ -9,6 +9,7 @@ use Marussia\Content\Repositories\PageRepository;
 use Marussia\Content\PageFactory;
 use Marussia\Content\Exceptions\CreatePageActionException;
 use Marussia\Content\Exceptions\SlugInvalidCharactersException;
+use Marussia\Content\ContentBuilder;
 
 class CreatePageAction
 {
@@ -28,11 +29,11 @@ class CreatePageAction
 
     private $options = [];
 
-    public function __construct(PageBuilder $builder, PageRepository $repository, PageFactory $factory, ContentFactory $contentValue)
+    public function __construct(PageBuilder $builder, PageRepository $repository, PageFactory $factory, ContentBuilder $contentValue)
     {
         $this->builder = $builder;
         $this->repository = $repository;
-        $this->pageFactory = $pageFactory;
+        $this->pageFactory = $factory;
         $this->contentValue = $contentValue;
     }
 
