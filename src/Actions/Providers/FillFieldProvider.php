@@ -8,8 +8,9 @@ use Marussia\ContentField\Actions\FillAction;
 use Marussia\ContentField\FieldDataFactory;
 use Marussia\ContentField\Field;
 use Marussia\ContentField\FieldData;
+use Marussia\ContentField\FieldFactory;
 
-class GetContentByIdProvider
+class FillFieldProvider
 {
     protected $fillFieldAction;
 
@@ -34,9 +35,8 @@ class GetContentByIdProvider
         return $this->fillFieldAction->execute($fieldData);
     }
 
-    public function createFieldWithoutHandler($value) : Field
+    public function createFieldWithoutHandler(string $name, $value) : Field
     {
-        return $this->fieldFactory(['value' => $value]);
+        return $this->fieldFactory->create(['name' => $name, 'value' => $value]);
     }
-
 }

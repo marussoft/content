@@ -12,17 +12,17 @@ class Collection implements \IteratorAggregate
     {
         $this->data = $data;
     }
-    
+
     public function all() : array
     {
         return $this->data;
     }
-    
+
     public function keys() : array
     {
         return array_keys($this->data);
     }
-    
+
     public function get($key, $default = null)
     {
         return array_key_exists($key, $this->data) ? $this->data[$key] : $default;
@@ -32,27 +32,32 @@ class Collection implements \IteratorAggregate
     {
         return array_key_exists($key, $this->data);
     }
-    
+
     public function isEmpty() : bool
     {
         return count($this->data) === 0;
     }
-    
+
     public function remove($key) : void
     {
         unset($this->data[$key]);
     }
-    
+
     public function replace(array $data = []) : void
     {
         $this->data = $data;
     }
-    
+
     public function set($key, $value) : void
     {
         $this->data[$key] = $value;
     }
-    
+
+    public function count() : int
+    {
+        return count($this->data);
+    }
+
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
