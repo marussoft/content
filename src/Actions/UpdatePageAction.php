@@ -44,8 +44,6 @@ class UpdatePageAction extends AbstractAction implements ActionInterface
         $contentValues = [];
 
         foreach ($this->data as $fieldName => $updateData) {
-
-//             var_dump($_POST);exit;
         
             if (property_exists($this->page, $fieldName) === false) {
                 unset($this->data[$fieldName]);
@@ -63,17 +61,15 @@ class UpdatePageAction extends AbstractAction implements ActionInterface
         }
 
         $content = $this->contentBuilder->createContent($contentValues);
-
-        $active = false;
         
         if (isset($this->data['is_active']) && $this->data['is_active'] === 'on') {
             unset($this->data['is_active']);
-            $active = true;
+            $this->page->isActive = true;
         }
         
         if ($content->isValid() && count($this->data) > 0) {
             $this->repository->updatePageValues($this->page->name, $this->data, $this->page->language->value);
-            $this->repository->updatePage($this->page->id, $active );
+            $this->repository->updatePage($this->page->id, $this->page->isActive );
         }
 
         return $content;

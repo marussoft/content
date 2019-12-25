@@ -154,7 +154,7 @@ class PageRepository
         return $content;
     }
 
-    public function getAll() : Collection
+    public function getAll(string $language = 'en-en') : Collection
     {
         $sql = 'SELECT * FROM pages';
 
@@ -166,7 +166,21 @@ class PageRepository
             $rawData = $result->fetchAll(\PDO::FETCH_ASSOC);
 
             foreach ($rawData as $data) {
+
+                $valuesTable = $this->makeValuesTableName($data['name']);
+                
+                $titleQuery = 'SELECT title FROM ' . $valuesTable . ' WHERE language = :language';
+                
+                $titleResult = $this->pdo->prepare($titleQuery);
+                
+                $titleResult->bindValue(':language', $language);
+                
+                $titleResult->execute();
+                
+                $data['title'] = $titleResult->fetchColumn();
+                
                 $page = $this->pageFactory->createFromArray($data);
+                
                 $collection->set($page->name, $page);
             }
         }
